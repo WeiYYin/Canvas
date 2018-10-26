@@ -1,0 +1,117 @@
+<canvas></canvas>
+<style>
+html,body,canvas{
+    width:100vw;
+    height:100vh;
+    background:#000000;
+    overflow:hidden;
+}
+</style>
+<script>
+setTimeout(function() {
+
+    var randomColor = function randomColor() {
+        if(!randomColor.colors) {
+            randomColor.colors = ['#05ffb0', '#00e7eb', '#ff3860', '#ffdd57', '#ff470f', '#b86bff', "#ff8800"];
+        }
+        var colors = randomColor.colors
+        return colors[Math.floor(Math.random() * colors.length)];
+    };
+
+    var random = function(min, max) {
+        return Math.floor(Math.random() * (max - min) + min);
+    };
+
+    var canvas = document.querySelector('canvas');
+    var context = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    var Ball = function() {
+        this.radius = random(30, 40);
+        this.x = canvas.width / 2 + random(-100, 100); // 水平位置每个小球都不一样
+        this.y = -this.radius;
+        this.vx = 0;
+        this.vy = Math.random();
+        this.color = randomColor();
+    };
+    Ball.prototype.render = function() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.1;
+
+        if (this.y > canvas.height) {
+            this.y = -this.radius;
+            this.x = canvas.width / 2 + random(-100, 100);
+            this.vx = 0;
+            this.vy = 0;
+        }
+
+        var dx = this.x - pointer.x; // 小球和白球的水平距离
+        var dy = this.y - pointer.y; // 俩球的垂直距离
+        var d = dx * dx + dy * dy;   // 圆心距的平方
+        var d0 = this.radius + 100   // 半径之和
+
+        // 此时发生碰撞
+        if (d < d0 * d0) {
+            d = Math.sqrt(d);
+            // 要计算出小球的弹出速度，先计算d0-d的水平和垂直分量。
+            var cos = dx / d;
+            var sin = dy / d;
+            var d1 = (d0 - d) * 1.2;
+            dx = d1 * cos;
+            dy = d1 * sin;
+
+            this.x += dx; // 不能显示真碰撞上了
+            this.y += dy;
+
+            // 设置水平速度
+            var offset = this.x > pointer.x ? 2 : -2;
+            this.vx =  dx / 2 + offset;
+            this.vy = dy / 2;
+        }
+
+        context.fillStyle = this.color;
+        context.beginPath();
+        context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        context.fill();
+    };
+
+    var balls = [];
+    var count = 0;
+
+    // 鼠标位置
+    var pointer = {
+        x: canvas.width / 2,
+        y: canvas.height / 2
+    };
+    canvas.addEventListener('mousemove', function(e) {
+        pointer.x = e.clientX;
+        pointer.y = e.clientY;
+    })
+
+    var render = function() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 画个白球
+        context.fillStyle = '#ffffff';
+        context.beginPath();
+        context.arc(pointer.x, pointer.y, 100, 0, Math.PI * 2, false);
+        context.fill();
+
+        if (count < 200) {
+            balls.push(new Ball());
+            count++;
+        }
+
+        balls.forEach(function(ball) {
+            ball.render();
+        });
+    };
+
+    (function run() {
+        requestAnimationFrame(run);
+        render();
+    })();
+}, 500);
+</script>

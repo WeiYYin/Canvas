@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>雨滴特效</title>
+    <style>
+        *{margin:0;padding:0;list-style-type:none;}
+        a,img{border:0;}
+        body {
+            overflow: hidden;
+            background: black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas-club" width="1920" height="666"></canvas>
+    <script type="text/javascript">
+        eval(function (p, a, c, k, e, r) {
+            e = function (c) { 
+                let dd = (c < a ? '' : e(parseInt(c / a))) + ((c = c % a) > 35 ? String.fromCharCode(c + 29) :
+                    c.toString(36));
+                    console.log(dd);
+                    
+                return dd;
+            };
+            if (true) {                
+                while (c--) {
+                    r[e(c)] = k[c] || e(c)
+                }
+                k = [function (e) {
+                    return r[e]
+                }];
+                
+                e = function () {
+                    return '\\w+'
+                };
+                c = 1
+            };
+            while (c--)
+                if (k[c]) p = p.replace(new RegExp('\\b' + e(c) + '\\b', 'g'), k[c]);
+            return p
+        }(
+            'd c=1g.1c("1a-19");d 7=c.18("17");d w=c.E=g.K;d h=c.N=g.z;d B=\'16(0, 0, 0, .1)\';d G=15;d k=[];e f(a,b){13 12.f()*(b-a)+a}e O(){}O.11={q:e(){6.x=f(0,w);6.y=0;6.F=\'10(H, p%, J%)\';6.w=2;6.h=1;6.D=f(4,5);6.r=3;6.t=1;6.u=2;6.m=f(h*.8,h*.9);6.a=1;6.S=.14},R:e(){l(6.y>6.m){7.U();7.V(6.x,6.y-6.h/2);7.L(6.x+6.w/2,6.y-6.h/2,6.x+6.w/2,6.y+6.h/2,6.x,6.y+6.h/2);7.L(6.x-6.w/2,6.y+6.h/2,6.x-6.w/2,6.y-6.h/2,6.x,6.y-6.h/2);7.W=\'X(H, p%, J%, \'+6.a+\')\';7.Y();7.Z()}v{7.A=6.F;7.Q(6.x,6.y,6.u,6.u*5)}6.P()},P:e(){l(6.y<6.m){6.y+=6.D}v{l(6.a>.T){6.w+=6.r;6.h+=6.t;l(6.w>p){6.a*=6.S;6.r*=.I;6.t*=.I}}v{6.q()}}}};e s(){w=c.E=g.K;h=c.N=g.z}e C(){M(d i=0;i<G;i++){(e(j){1b(e(){d o=1d O();o.q();k.1e(o)},j*1f)}(i))}}e n(){7.A=B;7.Q(0,0,w,h);M(d i 1h k){k[i].R()}1i(n)}g.1j("s",s);C();n();',
+            62, 82,
+            '||||||this|ctx||||||var|function|random|window||||drops|if|hit|anim||100|init|vw|resize|vh|size|else||||innerHeight|fillStyle|clearColor|setup|vy|width|color|max|180|98|50|innerWidth|bezierCurveTo|for|height||update|fillRect|draw|va|03|beginPath|moveTo|strokeStyle|hsla|stroke|closePath|hsl|prototype|Math|return|96|30|rgba|2d|getContext|club|canvas|setTimeout|getElementById|new|push|200|document|in|requestAnimationFrame|addEventListener'
+            .split('|'), 0, {}))
+    </script>
+</body>
+
+</html>

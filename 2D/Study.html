@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="icon" href="./img//开心.png">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            /* overflow: hidden; */
+        }
+        /* #Canvas{
+            height: 400px;
+            width: 400px;
+        } */
+        #box{
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="Box"></div>
+
+    <div id="box"></div>
+</body>
+<script>
+    let str = '';
+    for (let index = 0; index < 100; index++) {
+        str += "<canvas class='canvas'></canvas>";
+    }
+    let item = document.querySelector('#Box');
+    item.innerHTML = str;
+
+    let canvas = document.querySelectorAll('.canvas');
+    let canvasList = [];
+    for (let index = 0; index < canvas.length; index++) {
+        let element = canvas[index];
+        element.width = '400';
+        element.height = '400';
+        let el = element.getContext('2d');
+        canvasList.push(el);
+    }
+    
+    
+    /*
+    * Canvas 坐标  X轴 Y轴  单位 px   X轴 水平向右   Y轴 垂直向下
+    * Canvas 元素  包含  canvas 元素 和 元素绘图表面   当使用css 为 canvas 定义widthheight时  不会为 元素绘图表面 设置高宽  会使用默认  300 X 150 的大小；
+    * canvas 元素 大小和 元素绘图表面 大小不一致时 浏览器 会对 元素绘图表面 进行缩放  会导致 绘图 缩放
+    * 为 canvas 元素设置 高宽  时可直接 写在 canvas 元素 标签上 或 使用  js 为 canvas 添加 高宽
+    * <canvas id="Canvas" width="400" height="400"></canvas>
+    * 或者
+    * ctx.width = '400';  ctx.height = '400';
+    */
+    /*
+    * 图形一  矩形绘制
+    * 矩形绘制  填充颜色
+    * 矩形绘制 属性  X Y width height 
+    */
+    /*
+    * 绘制图形时 使用 fillStyle 填充颜色
+    * fillStyle 属性设置或返回用于填充绘画的颜色、渐变或模式。  color gradient pattern
+    * 
+    * color   css 合法 颜色值 十六进制颜色值 #FFFFFF  RGB 颜色值  RGBA 颜色值  HSL颜色值 HSLA颜色值 
+    * #FFFFFF  rgb(255,255,255)  rgba(255,255,255,1) 
+    * HSLA  hue 色调  saturation 饱和度   lightness 亮度  alpha 透明度
+    * Hue 是色盘上的度数（从 0 到 360） - 0 (或 360) 是红色，120 是绿色，240 是蓝色
+    * Saturation 是百分比值；0% 意味着灰色，而 100% 是全彩。
+    * Lightness 同样是百分比值；0% 是黑色，100% 是白色。
+    * alpha 参数是介于 0.0（完全透明）与 1.0（完全不透明）的数字。
+    * hsl(120,65%,75%,1);
+    * 
+    * gradient 渐变对象 
+    * createLinearGradient 创建 线性渐变对象 createRadialGradient 创建放射状/圆形渐变对象 
+    * context.createLinearGradient(x0,y0,x1,y1); 
+    * X0 Y0 渐变开始点 坐标
+    * X1 Y1 渐变结束点 坐标
+    * createLinearGradient  通过 addColorStop  规定不同的颜色
+    * gradient.addColorStop(stop,color);    
+    * stop 介于 0.0 与 1.0 之间的值，表示渐变中开始与结束之间的位置。
+    * color  css 合法 颜色值
+    * 
+    * pattern  
+    * createPattern(image, repetitionStyle) 方法为贴图图像创建一个模式。
+    * image  这个参数通常是一个 Image 对象，但是也可以使用一个 Canvas 元素。
+    * repetitionStyle 
+    * "repeat" - 在各个方向上都对图像贴图。默认值。"repeat-x" - 只在 X 方向上贴图。
+    * "repeat-y" - 只在 Y 方向上贴图。"no-repeat" - 不贴图，只使用它一次。
+    * 
+    */
+    let Img = new Image();
+    Img.src = "http://www.365mini.com/static/upload/image/info.png";
+    let Pattern = null;
+    Img.onload = function(){
+        Pattern = canvasList[1].createPattern(Img,'repeat');
+        canvasList[1].fillStyle = Pattern;
+        canvasList[1].fillRect(0,0,400,400);
+
+        canvasList[0].fillStyle = Pattern;
+        canvasList[0].fillRect(300,0,50,50);
+    }
+    let gradient = canvasList[0].createLinearGradient(0,0,0,50);
+    gradient.addColorStop(0,'hsl(120,70%,75%)');
+    gradient.addColorStop(0.5,'hsl(200,70%,75%)');
+    gradient.addColorStop(1,'hsl(360,70%,75%)');
+    
+    let color = [
+        '#999999',
+        'rgb(0,0,0)',
+        'rgba(0,0,0,0.2)',
+        'hsl(200,70%,70%)',
+        'hsla(200,70%,50%,0.5)',
+        gradient,
+    ];
+    let X = 0;
+    let Y = 0;
+    color.forEach(el=>{
+        if(X<400){
+            canvasList[0].fillStyle = el;
+            canvasList[0].fillRect(X,Y,50,50);
+            X += 50;
+        }else{
+            X = 0;
+            Y+=50;
+            canvasList[0].fillStyle = el;
+            canvasList[0].fillRect(X,Y,50,50);
+        }
+    })
+
+    /*
+    * 
+    * 图形的基本元素是路径。  路径是不同颜色和宽度的 线段或者曲线 的集合。 路径 或者子路径 都是闭合的。
+    * 1 创建 路径、 beginPath()  创建一条新的路径 
+    * 2 创建 路径起始点 
+    * 3 封闭路径
+    * 4 通过  描边或者填充 渲染 图形 closePath()  当使用 fill() 方法 时 会自动闭合 未闭合的路径  调用stroke() 是不会自动闭合路径
+    * 
+    * 直线绘制  三种 方法  moveTo lineTo stroke
+    * moveTo(X,Y) 用于创建新的 子路径
+    * lineTo(X,Y) 从 moveTo 创建的 子路径点 开始绘制 一条 连接到 规定坐标点的 直线 （如果 未使用moveTo 方法创建子路径起始点 lineTO 方法 相当于 moveTo）
+    * stroke() 方法将在 该路径上 绘制一条 直线
+    * fill() 方法  通过路径内容区域生成 实心图像   当调用 fill() 方法时  所有未闭合的形状将自动闭合 （可省略 closePath（） 方法）
+    */
+    canvasList[2].beginPath();
+    canvasList[2].moveTo(25,25);
+    canvasList[2].lineTo(50,0);
+    canvasList[2].lineTo(50,50);
+    canvasList[2].lineTo(25,25);
+    canvasList[2].strokeStyle = color[4];
+    canvasList[2].stroke();
+
+    canvasList[2].beginPath();
+    canvasList[2].moveTo(75,50);
+    canvasList[2].lineTo(75,0);
+    canvasList[2].lineTo(100,25)
+    canvasList[2].fill();
+
+    canvasList[2].beginPath();
+    canvasList[2].moveTo(125,50);
+    canvasList[2].lineTo(125,0);
+    canvasList[2].lineTo(150,25);
+    canvasList[2].fillStyle = color[2];
+    canvasList[2].fill();
+
+    let start = [];
+    let start_x = [210,230,215,220,200,180,185,170,190];
+    let start_y = [35,35,45,65,50,65,45,35,35];
+    canvasList[2].beginPath();
+    canvasList[2].fillStyle = color[4];
+    canvasList[2].moveTo(200,20);
+    start_x.forEach((el,i)=>{
+        canvasList[2].lineTo(el,start_y[i]);
+    })
+    canvasList[2].fill();
+
+    /*
+    * 圆弧
+    * 绘制圆弧 或者 圆 
+    * arc() 或 arcTo() 实现 通常使用 arc();
+    * arc(x,y,radius,startAngle,endAngle,anticlockwise)  
+    * x y  圆心坐标点  radius 半径  startAngle 开始弧度 endAngle 结束弧度（Math.PI） anticlockwise  逆时针 （boolean）  true 逆时针 false 顺时针
+    * 弧度=(Math.PI/180)*角度。   startAngle 0 开始 在 X轴右侧
+    * 
+    * arcTo(x1, y1, x2, y2, radius)
+    * 根据给定的控制点和半径画一段圆弧，再以直线连接两个控制点。
+    * 
+    * 
+    * 
+    * 画布 清空   clearRect(x,y,width,height)  清空 该区域画布
+    */
+    canvasList[3].moveTo(200,100);
+    canvasList[3].arc(200,100,20,0,Math.PI/2,false);
+    canvasList[3].fill();
+    for(var i=0;i<4;i++){
+        for(var j=0;j<3;j++){
+            canvasList[3].beginPath();
+            let x = 25+j*50; // x 坐标值
+            let y = 25+i*50; // y 坐标值
+            let radius = 20; // 圆弧半径
+            let startAngle = 0; // 开始点
+            let endAngle = Math.PI+(Math.PI*j)/2; // 结束点
+            let anticlockwise = i%2==0 ? false : true; // 顺时针或逆时针
+            canvasList[3].arc(x, y, radius, startAngle, endAngle, anticlockwise);
+            if (i>1){
+                canvasList[3].fill();
+            } else {
+                canvasList[3].stroke();
+            }
+        }
+    }
+
+
+    /*
+    * 绘制  二次方贝塞尔曲线 
+    * quadraticCurveTo(cp1x, cp1y, x, y)  绘制二次方贝塞尔曲线 cp1x,cp1y为一个控制点，x,y为结束点。
+    * 二次贝塞尔曲线  拥有 一个 开始点  一个结束点 和 一个 控制点 
+    * 
+    * bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x,y)
+    * 绘制三次贝塞尔曲线，cp1x,cp1y为控制点一，cp2x,cp2y为控制点二，x,y为结束点。
+    * 
+    */
+    // 绘制  二次方贝塞尔曲线 
+    canvasList[4].beginPath();
+    canvasList[4].moveTo(75,25);
+    canvasList[4].quadraticCurveTo(25,25,25,62.5);
+    canvasList[4].quadraticCurveTo(25,100,50,100);
+    canvasList[4].quadraticCurveTo(50,120,30,125);
+    canvasList[4].quadraticCurveTo(60,125,60,100);
+    canvasList[4].quadraticCurveTo(125,100,125,62.5);
+    canvasList[4].quadraticCurveTo(125,25,75,25);
+    canvasList[4].stroke();
+
+    // 绘制三次贝塞尔曲线
+    canvasList[5].beginPath();
+    canvasList[5].moveTo(75,40);
+    canvasList[5].bezierCurveTo(75,37,70,25,50,25);
+    canvasList[5].bezierCurveTo(20,25,20,62.5,20,62.5);
+    canvasList[5].bezierCurveTo(20,80,40,102,75,120);
+    canvasList[5].bezierCurveTo(110,102,130,80,130,62.5);
+    canvasList[5].bezierCurveTo(130,62.5,130,25,100,25);
+    canvasList[5].bezierCurveTo(85,25,75,37,75,40);
+    canvasList[5].stroke();
+
+    // 综合 使用 吃豆豆
+    let pan = 0;
+    let peas = {
+        direction:'right',
+        x:10,
+        y:10,
+        top:function(){
+            if(this.y>10){
+                this.y--; 
+            }
+        },
+        bottom:function(){
+            if(this.y<370){
+                this.y++; 
+            }
+        },
+        left:function(){
+            if(this.x>10){
+                this.x--;
+            }
+        },
+        right:function(){
+            if(this.x<370){
+                this.x++;
+            }
+        },
+    }
+    function draw(){
+        roundedRect(canvasList[6],1,1,398,398,10);
+        roundedRect(canvasList[6],10,10,380,380,10);
+        bu();
+        Go();
+        play(canvasList[6],peas.x,peas.y);
+        pan++;
+        window.requestAnimationFrame(draw);
+    }
+    draw();
+    function Go(){
+        switch (peas.direction) {
+            case 'top':
+                peas.top();
+                break;
+            case 'bottom':
+                peas.bottom();
+                break;
+            case 'left':
+                peas.left();
+                break;
+            case 'right':
+                peas.right();
+                break;
+            default:
+                break;
+        }
+    }
+    let a  = 1;
+    document.onkeydown = function(event){
+        let e = event || window.event || arguments.callee.caller.arguments[0];
+        let code = e.keyCode;
+        if(code=='38') peas.direction = 'top';
+        if(code=='40') peas.direction = 'bottom';
+        if(code=='37') peas.direction = 'left';
+        if(code=='39') peas.direction = 'right';
+    }
+    function play(ctx,x,y){
+        ctx.beginPath();
+        if(pan%10==0){
+            switch (peas.direction) {
+                case 'top':
+                    ctx.arc(x+10,y+10,8,-Math.PI/2,(Math.PI + Math.PI/2),true);
+                    break;
+                case 'bottom':
+                    ctx.arc(x+10,y+10,8,Math.PI/2,-(Math.PI + Math.PI/2),true);
+                    break;
+                case 'left':
+                    ctx.arc(x+10,y+10,8,Math.PI,Math.PI*2,true);
+                    break;
+                case 'right':
+                    ctx.arc(x+10,y+10,8,0,Math.PI*2,true);
+                    break;
+                default:
+                    break;
+            }
+        }else{
+            let c = 6 + pan%5;
+            switch (peas.direction) {
+                case 'top':
+                    ctx.moveTo(x+10,y+14);
+                    ctx.arc(x+10,y+10,8,(Math.PI/c - Math.PI/2),-(Math.PI/2+Math.PI/c),false);
+                    break;
+                case 'bottom':
+                    ctx.moveTo(x+10,y+6);
+                    ctx.arc(x+10,y+10,8,(Math.PI/2-Math.PI/c),(Math.PI/2+Math.PI/c),true);
+                    break;
+                case 'left':
+                    ctx.moveTo(x+14,y+10);
+                    ctx.arc(x+10,y+10,8,(Math.PI-Math.PI/c),(Math.PI/c - Math.PI),true);
+                    break;
+                case 'right':
+                    ctx.moveTo(x+6,y+10);
+                    ctx.arc(x+10,y+10,8,-Math.PI/c,Math.PI/c,true);
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+    }
+    function bu(){
+        let y = 0;
+        let x = 0;
+        while (y<380) {
+            while (x<380) {
+                let x1 = (x+10) + 20/2 -2;
+                let y1 = (y+10) + 20/2 -2;
+                canvasList[6].fillStyle = color[1];
+                canvasList[6].fillRect(x+10,y+10,20,20);
+                canvasList[6].fillStyle = color[4];
+                canvasList[6].fillRect(x1,y1,4,4);
+                x+=20;
+            }
+            x = 0;
+            y += 20;
+        }
+    }
+    // 圆角矩形 
+    function roundedRect(ctx,x,y,w,h,radius){
+        ctx.beginPath();
+        ctx.moveTo(x+radius,y);
+        ctx.quadraticCurveTo(x,y,x,y+radius);
+        ctx.lineTo(x,y+h-radius);
+        ctx.quadraticCurveTo(x,y+h,x+radius,y+h);
+        ctx.lineTo(x+w-radius,y+h);
+        ctx.quadraticCurveTo(x+w,y+h,x+w,y+h-radius);
+        ctx.lineTo(x+w,y+radius);
+        ctx.quadraticCurveTo(x+w,y,x+w-radius,y);
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+
+
+    /*
+    * 线型 line Style 
+    * lineWidth = value  设置 线的 宽度
+    * lineCap = type  设置 线条末端 样式
+    * lineJoin = type 设置 线接口 样式
+    * miterLimit = value  限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度。
+    * getLineDash()  返回一个包含当前虚线样式，长度为非负偶数的数组。
+    * setLineDash()  设置 当前的虚线样式
+    * lineDashOffset = value  设置 虚线的起始偏移量 
+    * 
+    * 
+    * lineWidth  设置线条的宽度 必须为正数  默认 1.0  线宽是指给定路径的中心到两边的粗细。 换句话说就是在路径的两边各绘制线宽的一半。因为画布的坐标并不和像素直接对应，当需要获得精确的水平或垂直线的时候要特别注意。
+    * 
+    * lineCap butt 默认   round 圆角  square 正方形   使用 round square  构建的图像 会超出 限定坐标点
+    * lineJoin round 圆角 bevel  斜角  miter 默认 斜切
+    * 
+    */
+    let ctx6 = canvasList[7];
+    for (let i = 0; i < 5; i++) {
+        ctx6.lineWidth = 1 + i;
+        ctx6.beginPath();
+        ctx6.moveTo( (i+1)*20, 0);
+        ctx6.lineTo((i+1)*20,100);
+        ctx6.stroke();
+    }
+    let lineCap = ['butt','round','square'];
+    lineCap.forEach((el,i)=>{
+        ctx6.lineWidth = 5;
+        ctx6.beginPath();
+        ctx6.lineCap = el;
+        ctx6.moveTo(i*30 + 20,120);
+        ctx6.lineTo(i*30 + 20,200);
+        ctx6.stroke();
+    })
+
+    let lineJoin = ['round','bevel','miter'];
+    lineJoin.forEach((el,i)=>{
+        ctx6.beginPath();
+        ctx6.lineWidth = 10;
+        ctx6.lineJoin = el;
+        ctx6.moveTo(20,250 + i*30);
+        ctx6.lineTo(20 + 50, 250 + i*30 + 50);
+        ctx6.lineTo(20 + 100,250 + i*30);
+        ctx6.lineTo(20 + 150,250 + i*30 + 50);
+        ctx6.lineTo(20 + 200,250 + i*30);
+        ctx6.stroke();
+    })
+
+
+    /*
+    * Path2D 对象
+    * Path2D()会返回一个新初始化的Path2D对象（可能将某一个路径作为变量——创建一个它的副本，或者将一个包含SVG path数据的字符串作为变量）
+    * 
+    */
+    !function () {
+        let ctx7 = canvasList[7];
+        let rect = new Path2D();
+        rect.rect(200,200,50,50);
+        
+        let arc = new Path2D();
+        arc.moveTo(300,300);
+        arc.arc(350,350,10,0,Math.PI*2,true);
+
+        ctx7.stroke(rect);
+        ctx7.fill(arc);
+    } ();
+
+
+
+    /*
+    * 文本 绘制
+    * canvas 提供了两种方法来渲染文本  fillText  strokeText
+    * canvas 文本属性  font  textAlign  textBaseline  direction
+    * font当前我们用来绘制文本的样式. 这个字符串使用和 CSS font 属性相同的语法. 默认的字体是 10px sans-serif。
+    * textAlign 文本对齐选项. 可选的值包括：start, end, left, right or center. 默认值是 start。
+    * textBaseline 基线对齐选项. 可选的值包括：top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。
+    * direction 文本方向。可能的值包括：ltr, rtl, inherit。默认值是 inherit。
+    * 
+    * fillText(text,x,y,[maxWidth]);   文本  X Y （最大宽度 可选）  在指定 X Y 位置 绘制文本
+    * strokeText(text,x,y,[maxWidth]);  文本 X Y （最大宽度 可选）
+    * 
+    * measureText()  将返回一个 TextMetrics对象的宽度、所在像素，这些体现文本特性的属性。
+    * 
+    */
+    !function(){
+        let ctx = canvasList[8];
+        ctx.font = 'italic small-caps normal 40px/50px sans-serif';
+        ctx.strokeText('hello word',0,50);
+        ctx.textAlign = 'start';
+        ctx.fillText('hello word',0,100,200);
+        let img = new Image();
+        img.src = './img/下载.png';
+        img.onload = function(){
+            ctx.drawImage(img,140,140);// 文本绘制 textAlign 蓝线 为坐标点
+        }
+        let text = ctx.measureText("hello word");
+    }()
+
+
+
+    /*
+    * 图片使用
+    * 获得需要绘制的图片  
+    * 1  new Image()  构造 img 元素
+    * 2  获取页面上的 图片    document.getElementsByTagName()    document.images
+    * 3 使用 另一个 canvas 源 作为图片
+    * 
+    * drawImage(image, x, y) 其中 image 是 image 或者 canvas 对象，x 和 y 是其在目标 canvas 里的起始坐标。
+    * 
+    * drawImage(image, x, y, width, height)  这个方法多了2个参数：width 和 height，这两个参数用来控制 当向canvas画入时应该缩放的大小\
+    * 
+    * drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)   切图
+    * https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
+    * 第一个参数和其它的是相同的，都是一个图像或者另一个 canvas 的引用。其它8个参数最好是参照右边的图解，前4个是定义图像源的切片位置和大小，后4个则是定义切片的目标显示位置和大小。 
+    * sx  sy  sWidth sHeight  从 图像 sx xy 坐标开始 截取  sWidth sHeight 的 区域图像  
+    * 放置 到   画布   dx dy 位置 的  dWidth dHeight 区域
+    * 
+    * 
+    * 
+    */  
+    !function(){
+        let ctx = canvasList[8];
+        let img = new Image();
+        img.src = './img/开心.png';
+        img.onload = function(){
+            ctx.drawImage(img,0,100,50,50);
+        }
+        let img1 = new Image();
+        img1.src = './img/5.jpg';
+        img1.onload = function(){
+            ctx.drawImage(img1,100,100,50,50,50,150,50,50);
+        }
+    }()
+
+
+
+
+    /*
+    * 状态的保存和恢复 Saving and restoring state
+    * save()restore()
+    * save 和 restore 方法是用来保存和恢复 canvas 状态的，都没有参数。Canvas 的状态就是当前画面应用的所有样式和变形的一个快照。
+    * Canvas状态存储在栈中，每当save()方法被调用后，当前的状态就被推送到栈中保存。
+    * 绘画状态 包括  
+    * 当前应用的变形（即移动，旋转和缩放，见下） 
+    * strokeStyle, fillStyle, globalAlpha, lineWidth, lineCap, lineJoin, miterLimit, shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor, globalCompositeOperation 的值
+    * 当前的裁切路径（clipping path）
+    * 你可以调用任意多次 save 方法。
+    * 每一次调用 restore 方法，上一个保存的状态就从栈中弹出，所有设定都恢复。
+    * 
+    */
+
+    !function(){
+        let ctx = canvasList[9];
+        let x = 0;
+        let i = 0;
+        while (x<=90) {
+            i++;
+            let c = i * 25.5;
+            let rgb = 'rgb('+c+','+c+',0)';
+            ctx.fillStyle = rgb;
+            ctx.fillRect(x,x,(200-x*2),(200-x*2));
+            ctx.save();
+            x+=10;
+        }
+        let x1 = 0;
+        while (x1<=90) {
+            ctx.restore();
+            let x2 = x1 + 200;
+            ctx.fillRect(x2,x1,(200-x1*2),(200-x1*2));
+            x1+=10;
+        }
+    }()
+    
+
+
+
+    /*
+    * 移动 Translating
+    * translate(x, y) 
+    * translate 方法接受两个参数。x 是左右偏移量，y 是上下偏移量
+    * translate 相对 与当前位置 进行移动  （移动为 canvas 画布移动   第二次移动 会 相对与 第一次 移动后的位置 进行 移动）
+    * 
+    */
+
+    !function(){
+        let ctx = canvasList[10];
+        for (let i = 0; i < 3; i++) {
+            ctx.save();
+            ctx.translate(90*i,0);
+            ctx.fillStyle = '#00FFFF';
+            ctx.fillRect(20,20,50,50);
+            ctx.fillStyle = '#33CCFF';
+            ctx.fillRect(20,100,50,50);
+            ctx.fillStyle = '#6699FF';
+            ctx.fillRect(20,180,50,50);
+            ctx.restore();
+        }
+        
+
+    }();
+
+    !function(){
+        let ctx = canvasList[11];
+        ctx.fillRect(0,0,300,300);
+        for (let i=0;i<3;i++) {
+            for (let j=0;j<3;j++) {
+                ctx.save();
+                ctx.strokeStyle = "#9CFF00";
+                ctx.translate(50+j*100,50+i*100);
+                drawSpirograph(ctx,20*(j+2)/(j+1),-8*(i+3)/(i+1),10);
+                ctx.restore();
+            }
+        }
+    }()
+    function drawSpirograph(ctx,R,r,O){
+        var x1 = R-O;
+        var y1 = 0;
+        var i  = 1;
+        ctx.beginPath();
+        ctx.moveTo(x1,y1);
+        do {
+            if (i>2000) break;
+            var x2 = (R+r)*Math.cos(i*Math.PI/72) - (r+O)*Math.cos(((R+r)/r)*(i*Math.PI/72))
+            var y2 = (R+r)*Math.sin(i*Math.PI/72) - (r+O)*Math.sin(((R+r)/r)*(i*Math.PI/72))
+            ctx.lineTo(x2,y2);
+            x1 = x2;
+            y1 = y2;
+            i++;
+        } while (x2 != R-O && y2 != 0 );
+        ctx.stroke();
+    }
+
+
+    !function(){
+        let content = canvasList[12]
+        let radian = 0,   //设置初始弧度
+            radian_add = Math.PI/180;  //设置弧度增量
+        content.beginPath();  //开始绘图
+        content.translate(200,200);  //设置绘图原点
+        content.moveTo(getX(radian),getY(radian)); //移动绘图游标至原点
+        while(radian <= (Math.PI*2)){  //每增加一次弧度，绘制一条线
+            radian += radian_add;
+            X = getX(radian);
+            Y = getY(radian);
+            content.lineTo(X,Y);
+        }
+        content.strokeStyle = "red";  //设置描边样式
+        content.stroke();  //对路径描边
+        
+    }()
+
+    function getX(t){   //获取玫瑰线的X坐标
+        return 100 * Math.sin(4*t)*Math.cos(t);
+    }
+
+    function getY(t){  //获取玫瑰线的Y坐标
+        return 100 * Math.sin(4*t)*Math.sin(t);
+    }
+
+
+    !function(){
+        let ctx = canvasList[13];
+        let i = 0;
+
+        while (i<10) {
+            i++;
+            let c = i/10;
+            let x1 = 10*Math.cos(Math.PI/6)*c;
+            let y1 = 10*Math.sin(Math.PI/6)*c;
+            ctx.lineTo(x1,y1);
+        }
+        ctx.stroke(); 
+
+        ctx.beginPath();
+
+        let ra = 0;
+        let radd = Math.PI/180;
+        ctx.translate(70,70);
+        while (ra<Math.PI*2) {
+            ra += radd;
+            let a = 50*Math.cos(2*ra);
+            let x =  a * Math.cos(ra);
+            let y =  a * Math.sin(ra);
+            ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.translate(100,100);
+        let theta = 0;
+        let ta = Math.PI/720;
+        while (theta<Math.PI*10) {
+            theta+=ta;
+            let x = 40*Math.cos(theta) + 100*Math.cos(0.8*theta);
+            let y = 40*Math.sin(theta) - 100*Math.sin(0.8*theta);
+            ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+    }()
+
+
+
+    /*
+    * 旋转 rotate(angle) 
+    * 这个方法只接受一个参数：旋转的角度(angle)，它是顺时针方向的，以弧度为单位的值。
+    * 旋转中心点 始终为画布原点 （0,0）
+    * 可通过 translate 改变 原点位置
+    * 
+    * 
+    */
+
+    !function(){
+        let ctx = canvasList[14];
+        ctx.translate(200,200);
+        for (let i = 1; i < 8; i++) {
+            ctx.save();
+            ctx.fillStyle = 'rgb('+30*i+','+ (255-30*i) +',255)';
+            for (let j = 0; j < i*8; j++) {
+                ctx.rotate(Math.PI*2/(i*8));
+                ctx.beginPath();
+                ctx.arc(0,i*12.5,4,0,Math.PI*2,true);
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+        
+    }()
+
+
+    /*
+    * 缩放 scale(x, y)
+    * scale 方法接受两个参数。x,y 分别是横轴和纵轴的缩放因子，它们都必须是正值。值比 1.0 小表示缩小，比 1.0 大则表示放大，值为 1.0 时什么效果都没有。
+    * 缩放 依旧根据原点进行缩放
+    * 
+    * 
+    * 
+    * 
+    */
+    !function() {
+        let ctx = canvasList[15];
+        ctx.strokeStyle = "#fc0";
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(0,0,300,300);
+
+        // Uniform scaling
+        ctx.save()
+        ctx.translate(50,50);
+        drawSpirograph(ctx,22,6,5);  // no scaling
+
+        ctx.translate(100,0);
+        ctx.scale(0.75,0.75);
+        drawSpirograph(ctx,22,6,5);
+
+        ctx.translate(133.333,0);
+        ctx.scale(0.75,0.75);
+        drawSpirograph(ctx,22,6,5);
+        ctx.restore();
+
+        // Non-uniform scaling (y direction)
+        ctx.strokeStyle = "#0cf";
+        ctx.save()
+        ctx.translate(50,150);
+        ctx.scale(1,0.75);
+        drawSpirograph(ctx,22,6,5);
+
+        ctx.translate(100,0);
+        ctx.scale(1,0.75);
+        drawSpirograph(ctx,22,6,5);
+
+        ctx.translate(100,0);
+        ctx.scale(1,0.75);
+        drawSpirograph(ctx,22,6,5);
+        ctx.restore();
+
+        // Non-uniform scaling (x direction)
+        ctx.strokeStyle = "#cf0";
+        ctx.save()
+        ctx.translate(50,250);
+        ctx.scale(0.75,1);
+        drawSpirograph(ctx,22,6,5);
+
+        ctx.translate(133.333,0);
+        ctx.scale(0.75,1);
+        drawSpirograph(ctx,22,6,5);
+
+        ctx.translate(177.777,0);
+        ctx.scale(0.75,1);
+        drawSpirograph(ctx,22,6,5);
+        ctx.restore();
+        
+    }()
+
+
+
+    /*
+    * 变形  transform(m11, m12, m21, m22, dx, dy)
+    * 这个方法是将当前的变形矩阵乘上一个基于自身参数的矩阵
+    * m11：水平方向的缩放
+    * m12：水平方向的倾斜偏移
+    * m21：竖直方向的倾斜偏移
+    * m22：竖直方向的缩放
+    * dx：水平方向的移动
+    * dy：竖直方向的移动
+    * 使用  transform 需先理解 矩阵乘法  https://yq.aliyun.com/ziliao/295100
+    * 
+    * X1 = m11*x + m21*y + dx;   Y1 = m12*x + m22*y +　dy;  (X1  Y1  为移动过后坐标点)
+    * 
+    * 通过 transform 实现 移动
+    * transform(0,1,1,0,dx,dy) 或 transform(1,0,0,1,dx,dy)  dx 水平方向移动距离  dy Y轴 移动数值
+    * X1 = x + dx;  Y1 = y + dy;
+    * 
+    * 用过 transform 实现 缩放
+    * transform(m11,0,0,m22,0,0)  或  transform(0,m12,m21,0,0,0)  m11,m22  m12 m21  分别为沿X Y 轴 缩放倍速
+    * X1 = m11 * x; Y1 = m22 * y;    或    X1 = m12*x ; Y1 = m21 * y;
+    * 
+    * 通过 transform 实现 旋转
+    * transform(cos,sin,-sin,cos,0,0)   
+    * X1 = x * cos - y *sin; Y1 = x * sin + y * cos;
+    * 
+    * 
+    * resetTransform() 可以重置当前变形为单位矩阵  与   setTransform(1, 0, 0, 1, 0, 0)  相同
+    * 
+    * 
+    */
+
+    !function(){
+        let ctx = canvasList[16];
+        let sin = Math.sin(Math.PI/6);
+        let cos = Math.cos(Math.PI/6);
+        let i = 0;
+        ctx.translate(200,200);
+        while (i<12) {
+            i++;
+            let color = 'rgb('+ i*10 +','+ i*20 +',100)';
+            ctx.fillStyle = color;
+            ctx.fillRect(0,0,100,10);
+            ctx.transform(cos,sin,-sin,cos,0,0);
+        }
+        ctx.resetTransform();
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0,0,20,20);
+    }()
+
+
+    /*
+    * globalCompositeOperation属性  （全局复合操作）
+    *  globalCompositeOperation = type  （原有内容  destination） （新图形  source）
+    * type  
+    * source-over (默认值  新图形 覆盖 原图形) 
+    * destination-over 原有值覆盖在新图形之上
+    * source-atop 只绘制原有内容 和 新图形重叠部分   且新图形位于原图形之上 
+    * destination-atop 现有画布 只保留 与 新图形重合部分  且原有内容位于重叠部分之上
+    * source-in 新图形只出现有原有部分内容重叠部分 其余区域 透明
+    * destination-in 原有内容只出现和新图形重叠部分 其余区域 透明
+    * source-out 新图形中与原有内容不重叠区域 保留
+    * destination-out 原有内容 与 新图形 不重叠部分 保留
+    * lighter  两图形 重叠部分 做加色处理（颜色叠加）
+    * darker 两图形 重叠部分 做 减色处理
+    * copy 只保留新图形(谷歌浏览器无效)
+    * xor 重叠部分透明 
+    * multiply 重叠与正常绘制 之外区域 透明
+    * screen 将底层像素 与 顶层像素  相乘
+    * overlay 像素 倒转 相乘 再倒转
+    * lighten 暗色 变 暗 浅色变浅 
+    * color-dodge 保留图层 最暗元素
+    * 更多的 不写了。，。。。。。。。。
+    * https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Compositing
+    * 
+    * 
+    */
+
+    !function(){
+        
+        let list = ['source-over','destination-over','source-atop','destination-atop','source-in','destination-in','source-out','destination-out','lighter','darker','copy','xor','multiply','screen','overlay','lighten'];
+        let arc = [
+            {
+                x:50,
+                y:Math.tan(Math.PI/6)*50,
+            },
+            {
+                x:-50,
+                y:Math.tan(Math.PI/6)*50,
+            },
+            {
+                x:0,
+                y:-50/Math.cos(Math.PI/6),
+            }
+        ];
+        let color = ['#0000FF','#FF0000','#00FF00'];
+        let r = 50/Math.cos(Math.PI/6) + 10;
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                let x = 17 + j + i*4;
+                let ctx = canvasList[x];
+                ctx.save();
+                ctx.translate(200,200);
+                ctx.fillText(list[j+i*4],-180,-180);
+                ctx.globalCompositeOperation = list[j+i*4];
+                for (let k = 0; k < arc.length; k++) {
+                    ctx.beginPath();
+                    ctx.fillStyle = color[k];
+                    ctx.arc(arc[k].x,arc[k].y,r,0,Math.PI*2,true);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+            
+        }
+    }()
+
+
+    /*
+    * 裁切路径 clip()
+    * clip() 方法用于裁切路径  clip 形成一个 蒙层 没有被蒙版的 区域会被隐藏
+    * 将当前正在 绘制的 路径 转换为 裁切路径 
+    * 
+    * 
+    * 
+    */
+
+    !function(){
+        let ctx = canvasList[33];
+        ctx.arc(150,150,130,0,Math.PI*2,true);
+        ctx.clip();
+        ctx.translate(200,20);
+        let i = 0;
+        while (i<80) {
+            ctx.translate(30,30);
+            ctx.scale(0.95,0.95);
+            ctx.rotate(Math.PI/12);
+            ctx.beginPath();
+            ctx.fillStyle = 'red';
+            ctx.globalAlpha = '0.4';
+            ctx.arc(0,0,50,0,Math.PI*2,true);
+            ctx.fill();
+            i++;
+        }
+    }()
+
+    // 五角星绘制
+    !function(){
+        let ctx = canvasList[34];
+        ctx.translate(200,200);
+        let x = Math.sin(Math.PI/10)*30;
+        let y = x / Math.tan(Math.PI/5);
+        let y1 = x / Math.tan(Math.PI/10);
+        for (let i = 0; i < 5; i++) {
+            ctx.save();
+            ctx.rotate(2*i*Math.PI/5);
+            ctx.moveTo(0,0);
+            ctx.lineTo(x,-y);
+            ctx.lineTo(0,-(y1+y));
+            ctx.lineTo(-x,-y);
+            ctx.restore();
+        }
+        ctx.fill();
+    }()
+
+    !function(){
+        let ctx = canvasList[35];
+        ctx.translate(200,200);
+        let r = 50;
+        let r1 = (r*Math.tan(Math.PI/10)*Math.tan(Math.PI/5))/((Math.tan(Math.PI/10)+Math.tan(Math.PI/5))*Math.sin(Math.PI/5));
+        ctx.moveTo(0,-r);
+        for (let i = 0; i < 9; i++) {
+            ctx.rotate(Math.PI/5);
+            if(i%2==0){
+                ctx.lineTo(0,-r1);
+            }else{
+                ctx.lineTo(0,-r);
+            }
+        }
+        ctx.closePath();
+        ctx.stroke();
+    }()
+
+    !function(){
+        let ctx = canvasList[36];
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0,0,400,400);
+        let Start = {
+            drawStart:function(){
+                ctx.save();
+                let tx = Math.random()*400;
+                let ty = Math.random()*400;
+                ctx.translate(tx,ty);
+                let r = Math.floor(Math.random()*5+2);
+                let tz = Math.tan(Math.PI/10)*Math.tan(Math.PI/5);
+                let tp = (Math.tan(Math.PI/10)+Math.tan(Math.PI/5))*Math.sin(Math.PI/5);
+                let r1 = (r*tz)/tp;
+                ctx.beginPath();
+                ctx.moveTo(0,-r);
+                for (let i = 0; i < 9; i++) {
+                    ctx.rotate(Math.PI/5);
+                    if(i%2==0){
+                        ctx.lineTo(0,-r1);
+                    }else{
+                        ctx.lineTo(0,-r);
+                    }
+                }
+                ctx.closePath();
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+                ctx.restore();
+            },
+        }
+        for (let i = 0; i < 100; i++) {
+            Start.drawStart();
+        }
+    }()
+
+    // 会动的星星
+    !function(){
+        let ctx = canvasList[37];
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0,0,400,400);
+        ctx.save();
+        let start = {
+            list:[],
+            get:function(){
+                for (let i = 0; i < 200; i++) {
+                    let item = {
+                        x:Math.floor(Math.random()*400),
+                        y:Math.floor(Math.random()*400),
+                        r:Math.floor(Math.random()*5+2),
+                        alpha:0.5 + Math.random()*0.5,
+                    }
+                    this.list.push(item);
+                }
+            },
+            drawStart:function(item){
+                let t = Math.random() > 0.5;
+                let a = Math.random() > 0.5;
+                if(t) item.x += 0.1;
+                else item.x += 0.1;
+                if(a) item.y+=0.1;
+                else item.y-=0.1;
+                if(a) item.alpha+=0.05;
+                else item.alpha-=0.05;
+                if(item.x>=390||item.x<=10){
+                    item.x = 50;
+                }
+                if(item.y>=390||item.y<=10){
+                    item.y = 50;
+                }
+                let tz = Math.tan(Math.PI/10)*Math.tan(Math.PI/5);
+                let tp = (Math.tan(Math.PI/10)+Math.tan(Math.PI/5))*Math.sin(Math.PI/5);
+                let r1 = (item.r*tz)/tp;
+                ctx.beginPath();
+                ctx.translate(item.x,item.y);
+                ctx.moveTo(0,-item.r);
+                for (let i = 0; i < 9; i++) {
+                    ctx.rotate(Math.PI/5);
+                    if(i%2==0){
+                        ctx.lineTo(0,-r1);
+                    }else{
+                        ctx.lineTo(0,-item.r);
+                    }
+                }
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(255,255,255,' + item.alpha + ')';
+                ctx.fill();
+            },
+        }
+        start.get();
+        let draw = function(){
+            ctx.clearRect(0,0,400,400);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0,0,400,400);
+            for (let i = 0; i < start.list.length; i++) {
+                const element = start.list[i];
+                ctx.save();
+                start.drawStart(element);
+                ctx.restore();
+            }
+            
+            window.requestAnimationFrame(arguments.callee);
+        }
+        draw();
+    }()
+
+
+</script>
+</html>

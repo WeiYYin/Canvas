@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,shrink-to-fit=no" />
+    <title> 上下班路上的那一幅静态广告 </title>
+    <style>
+        .stage {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            margin: auto;
+            width: 800px;
+            max-width: 100%;
+            border: 1px solid #CCC;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas class="stage" width="800" height="500"></canvas>
+    <script>
+        "use strict";
+        (function (query) {
+            var ARC = 0.004,
+                ANGLE = 10,
+                PI2 = Math.PI * 2,
+                NUM = 150,
+                VELOCITY = 3;
+
+            function Scene(ctx, width, height) {
+                this.ctx = ctx;
+                this.width = width;
+                this.height = height;
+                this.sprites = [];
+                ctx.globalCompositeOperation = "lighter";
+
+                this.render = this.render.bind(this);
+            }
+
+            Scene.prototype = {
+                add: function (sprite) {
+                    this.sprites.push(sprite);
+                },
+                render: function (timer) {
+                    var sprites = this.sprites,
+                        ii = sprites.length,
+                        i = ii,
+                        ctx = this.ctx,
+                        w = this.width,
+                        h = this.height;
+
+                    ctx.clearRect(0, 0, width, height);
+                    requestAnimationFrame(this.render);
+
+                    while (i) {
+                        sprites[--i].update(timer, w, h);
+                    }
+                    for (; i < ii; i++) {
+                        sprites[i].draw(ctx);
+                    }
+
+                    this.make(ii);
+                },
+                start: function () {
+                    this.render();
+                },
+                make: function (num) {
+                    if (num < NUM) {
+                        var radius = getRadius();
+                        num++;
+                        this.add(new BallArtist("", -radius, height / 2, radius, getColor(), getAngle()));
+                    }
+                }
+            };
+
+            function Sprite(draw, behaviors) {
+                this.draw = draw;
+                this.behaviors = behaviors || [];
+            }
+
+            Sprite.prototype.update = function (timer, w, h) {
+                var behaviors = this.behaviors,
+                    i = 0,
+                    ii = behaviors.length;
+
+                for (; i < ii; i++) {
+                    behaviors[i].call(this, timer, w, h);
+                }
+            };
+
+            function BallArtist(name, x, y, radius, color, angle) {
+                this.name = name,
+                    this.x = x;
+                this.y = y;
+                this.v = Math.random() * VELOCITY + VELOCITY;
+                this.radius = radius;
+                this.color = color;
+                this.angle = angle;
+                this.vr = Math.random() * ARC * (angle > 0 ? 1 : angle < 0 ? -1 : 0);
+            }
+
+            BallArtist.prototype = new Sprite(function (ctx) {
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.arc(this.x, this.y, this.radius, 0, PI2);
+                ctx.fill();
+
+            }, [function (timer, width, height) {
+                if (this.x > width + this.radius || this.y < -this.radius || this.y > height + this.radius) {
+                    var radius = getRadius();
+                    this.reset(-radius, height / 2, radius, getColor(), getAngle());
+                    return;
+                }
+                this.angle += this.vr;
+
+                var sin = Math.sin(this.angle),
+                    cos = Math.cos(this.angle);
+
+                this.x += cos * this.v;
+                this.y += sin * this.v;
+            }]);
+
+            BallArtist.prototype.reset = function (x, y, radius, color, angle) {
+                this.x = x;
+                this.y = y;
+                this.v = Math.random() * VELOCITY + VELOCITY;
+                this.radius = radius;
+                this.color = color;
+                this.angle = angle;
+                this.vr = Math.random() * ARC * (angle > 0 ? 1 : angle < 0 ? -1 : 0);
+            };
+
+            var cvs = document.querySelector(query),
+                ctx = cvs.getContext("2d"),
+                width = cvs.width,
+                height = cvs.height,
+                num = 0,
+                scene = new Scene(ctx, width, height),
+                color = ["hsla(", 0, ",100%,30%,.8)"],
+                angle = Math.PI / 180 * ANGLE,
+                radius;
+
+            function getColor() {
+                color[1] = Math.random() * 360;
+                return color.join("");
+            }
+
+            function getAngle() {
+                return Math.random() * angle - (angle / 2);
+            }
+
+            function getRadius() {
+                return 20 * Math.random() + 5;
+            }
+
+            scene.start();
+
+        })("canvas");
+    </script>
+</body>
+
+</html>
